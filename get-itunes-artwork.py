@@ -7,12 +7,12 @@ import json
 
 MOVIES = {
     'title_prompt': "Search for a movie title (or type 'tv' to switch to TV Shows): ",
-    'search_url': "http://ax.itunes.apple.com/WebObjects/MZStoreServices.woa/wa/wsSearch?entity=movie&term=",
+    'search_url': "https://itunes.apple.com/search?entity=movie&term=",
     'name_node': 'trackName',
 }
 TV = {
     'title_prompt': "Search for a TV Show season (or type 'movie' to switch to Movies): ",
-    'search_url':  "http://ax.itunes.apple.com/WebObjects/MZStoreServices.woa/wa/wsSearch?entity=tvSeason&term=",
+    'search_url':  "https://itunes.apple.com/search?entity=tvSeason&term=",
     'name_node': 'collectionName',
 }
 
