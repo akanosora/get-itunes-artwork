@@ -55,9 +55,9 @@ def get_art(title=None, keep_going=False):
                     which = None
                     not_found.append(title)
             if which != None:
-                url = results['results'][which]['artworkUrl100'].replace("100x100-75.", "")
+                url = results['results'][which]['artworkUrl100'].replace("100x100bb.jpg", "1200x1200bb.png")
                 sys.stdout.write("Downloading artwork...") 
-                urllib.urlretrieve(url, "%s%s.jpg" % (SAVE_TO, title.replace("/", "-").replace(":", " -")))
+                urllib.urlretrieve(url, "%s/Poster.png" % SAVE_TO)
                 sys.stdout.write(" done.\n\n")
             
         else:
