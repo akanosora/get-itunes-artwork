@@ -18,7 +18,7 @@ TV = {
 
 media = MOVIES
 
-SAVE_TO = "%s/Desktop/" % os.environ["HOME"] # Directory must exist
+SAVE_TO = "%s/Desktop/" % os.path.expanduser("~") # Directory must exist
 TITLES = [] # Optionally populate this with a list of titles for batch processing
 
 def get_art(title=None, keep_going=False):
