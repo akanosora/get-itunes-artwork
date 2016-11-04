@@ -7,16 +7,17 @@ import json
 
 MOVIES = {
     'title_prompt': "Search for a movie title (or type '#help' to see more options): ",
-    'search_url': "https://itunes.apple.com/search?entity=movie&term=",
-    'name_node': 'trackName',
+    'entity': 'movie',
+    'name_node': 'trackName'
 }
 TV = {
-    'title_prompt': "Search for a TV show season (or type '#help' to see more options): ",
-    'search_url':  "https://itunes.apple.com/search?entity=tvSeason&term=",
-    'name_node': 'collectionName',
+    'title_prompt': "Search for a TV show (or type '#help' to see more options): ",
+    'entity':  'tvShow',
+    'name_node': 'collectionName'
 }
 
 media = MOVIES.copy()
+media.update({'country': 'US'})
 
 SAVE_TO = "%s/Desktop/" % os.path.expanduser("~") # Directory must exist
 TITLES = [] # Optionally populate this with a list of titles for batch processing
@@ -25,16 +26,21 @@ def get_art(title=None, keep_going=False):
     global not_found, media
     if not title:
         title = raw_input(media['title_prompt'])
-        if title == "#movie":
+        if title == '':
+            get_art(None, True)
+        if title == '#movie':
             media.update(MOVIES)
             get_art(None, True)
-        elif title == "#tv":
+        elif title == '#tvshow':
             media.update(TV)
             get_art(None, True)
-        elif title == "#help":
-            print "Type '#movie' to switch to searching for movie titles\nType '#tv' to switch to searching for TV show seasons\nType '#quit' to exit the program"
+        elif title == '#country':
+            media.update({'country': raw_input('Type two-letter country code for the store you want to search: ')})
             get_art(None, True)
-        elif title == "#quit":
+        elif title == '#help':
+            print "Type '#movie' to switch to searching for movie titles\nType '#tvshow' to switch to searching for TV shows\nType '#country' to change country (The default is US)\nType '#quit' to exit the program"
+            get_art(None, True)
+        elif title == '#quit':
             exit();
     
     print "\nSearching for \"%s\"..." % title
@@ -42,7 +48,6 @@ def get_art(title=None, keep_going=False):
     search_term = urllib.quote_plus(title)
 
     try:
-        response = urllib2.urlopen("%s%s" % (media['search_url'], search_term))
         results = json.load(response)
         resultCount = results['resultCount']
         if resultCount > 0:
