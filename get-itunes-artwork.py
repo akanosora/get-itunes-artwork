@@ -48,6 +48,7 @@ def get_art(title=None, keep_going=False):
     search_term = urllib.quote_plus(title)
 
     try:
+        response = urllib2.urlopen("https://itunes.apple.com/search?entity=%s&country=%s&term=%s" % (media['entity'], media['country'].upper(), search_term))
         results = json.load(response)
         resultCount = results['resultCount']
         if resultCount > 0:
