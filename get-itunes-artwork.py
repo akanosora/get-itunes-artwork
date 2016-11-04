@@ -6,17 +6,17 @@ import urllib, urllib2
 import json
 
 MOVIES = {
-    'title_prompt': "Search for a movie title (or type 'tv' to switch to TV Shows): ",
+    'title_prompt': "Search for a movie title (or type '#help' to see more options): ",
     'search_url': "https://itunes.apple.com/search?entity=movie&term=",
     'name_node': 'trackName',
 }
 TV = {
-    'title_prompt': "Search for a TV Show season (or type 'movie' to switch to Movies): ",
+    'title_prompt': "Search for a TV show season (or type '#help' to see more options): ",
     'search_url':  "https://itunes.apple.com/search?entity=tvSeason&term=",
     'name_node': 'collectionName',
 }
 
-media = MOVIES
+media = MOVIES.copy()
 
 SAVE_TO = "%s/Desktop/" % os.path.expanduser("~") # Directory must exist
 TITLES = [] # Optionally populate this with a list of titles for batch processing
@@ -25,13 +25,16 @@ def get_art(title=None, keep_going=False):
     global not_found, media
     if not title:
         title = raw_input(media['title_prompt'])
-        if title == "movie":
-            media = MOVIES
+        if title == "#movie":
+            media.update(MOVIES)
             get_art(None, True)
-        elif title == "tv":
-            media = TV
+        elif title == "#tv":
+            media.update(TV)
             get_art(None, True)
-        elif title == "exit":
+        elif title == "#help":
+            print "Type '#movie' to switch to searching for movie titles\nType '#tv' to switch to searching for TV show seasons\nType '#quit' to exit the program"
+            get_art(None, True)
+        elif title == "#quit":
             exit();
     
     print "\nSearching for \"%s\"..." % title
