@@ -8,18 +8,23 @@ import json
 SAVE_TO = "%s/Desktop/" % os.path.expanduser("~") # Directory must exist
 TITLES = [] # Optionally populate this with a list of titles for batch processing
 
-MOVIES = {
-    'title_prompt': "Search for a movie title (or type '#help' to see more options): ",
+MOVIE = {
+    'title_prompt': "Search for a movie (or type '--help' or '-h' to see more options): ",
     'entity': 'movie',
     'name_node': 'trackName'
 }
 TV = {
-    'title_prompt': "Search for a TV show (or type '#help' to see more options): ",
-    'entity':  'tvShow',
+    'title_prompt': "Search for a TV show (or type '--help' or '-h' to see more options): ",
+    'entity': 'tvShow',
+    'name_node': 'collectionName'
+}
+ALBUM = {
+    'title_prompt': "Search for an album (or type '--help' or '-h' to see more options): ",
+    'entity': 'album',
     'name_node': 'collectionName'
 }
 
-media = MOVIES.copy()
+media = MOVIE.copy()
 media.update({'country': 'US'})
 
 def get_art(title=None, keep_going=False, unique_filenames=True):
@@ -28,19 +33,27 @@ def get_art(title=None, keep_going=False, unique_filenames=True):
         title = raw_input(media['title_prompt'])
         if title == '':
             get_art(None, True, False)
-        if title == '#movie':
-            media.update(MOVIES)
+        elif title in ('--movie', '-m'):
+            media.update(MOVIE)
             get_art(None, True, False)
-        elif title == '#tvshow':
+        elif title in ('--tv-show', '-t'):
             media.update(TV)
             get_art(None, True, False)
-        elif title == '#country':
+        elif title in ('--album', '-a'):
+            media.update(ALBUM)
+            get_art(None, True, False)
+        elif title in ('--country', '-c'):
             media.update({'country': raw_input('Type two-letter country code for the store you want to search: ')})
             get_art(None, True, False)
-        elif title == '#help':
-            print "\nType '#movie' to switch to searching for movie titles\nType '#tvshow' to switch to searching for TV shows\nType '#country' to change country (The default is US)\nType '#quit' to exit the program\n"
+        elif title in ('--help', '-h'):
+            print "\n" + \
+                    "Type '--movie' or '-m' to switch to searching for movies\n" + \
+                    "Type '--tv-show' or '-t' to switch to searching for TV shows\n" + \
+                    "Type '--album' or '-a' to switch to searching for albums\n" + \
+                    "Type '--country' or '-c' to change country (The default is US)\n" + \
+                    "Type '--quit' or '-q' to exit the program\n"
             get_art(None, True, False)
-        elif title == '#quit':
+        elif title in ('--quit', '-q'):
             exit();
     
     print "\nSearching for \"%s\"..." % title
@@ -56,7 +69,7 @@ def get_art(title=None, keep_going=False, unique_filenames=True):
                 which = 0
             else:
                 for index, result in enumerate(results['results']):
-                    print "%s. %s" % (index+1, result[media['name_node']])
+                    print "%s. %s" % (index+1, result[media['name_node']].encode("utf-8"))
                 which = raw_input("\nEnter a number to download its artwork (or hit Enter to search again): ")
                 try:
                     which = int(which) - 1
@@ -80,7 +93,7 @@ def get_art(title=None, keep_going=False, unique_filenames=True):
         pass
     
     if keep_going:
-        get_art(None, True)
+        get_art(None, True, unique_filenames)
 
 if __name__ == "__main__":
     not_found = []
